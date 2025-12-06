@@ -11,13 +11,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install && npm install -g typescript
 
 # Copy source code
 COPY . .
 
 # Build TypeScript
-RUN npx tsc
+RUN tsc -p .
 
 # Stage 2: Production
 FROM node:20-alpine
