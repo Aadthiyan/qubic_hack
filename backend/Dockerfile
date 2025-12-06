@@ -7,15 +7,14 @@ FROM node:20-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy package files first
+# Copy package files
 COPY package*.json ./
 
-# Install all dependencies (including dev dependencies for build)
-RUN npm install
+# Install dependencies
+RUN npm install && npm install -g typescript
 
-# Copy tsconfig and source code
-COPY tsconfig.json ./
-COPY src ./src
+# Copy source code
+COPY . .
 
 # Build TypeScript
 RUN npm run build
@@ -34,9 +33,6 @@ RUN npm ci --only=production && npm cache clean --force
 
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
-
-# Copy any other necessary files (env example, etc.)
-COPY --from=builder /app/package.json ./
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
