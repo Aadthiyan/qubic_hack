@@ -1,0 +1,25 @@
+{
+  "name": "nostromo-guardian-frontend",
+  "version": "1.0.0",
+  "description": "Dynamic Risk Scoring Dashboard for Qubic Launches",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "qubic",
+    "nostromo",
+    "risk-scoring",
+    "dashboard"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "next": "^16.0.7",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
+  }
+}
