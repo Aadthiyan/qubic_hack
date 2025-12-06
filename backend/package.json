@@ -1,0 +1,39 @@
+{
+  "name": "nostromo-guardian-backend",
+  "version": "1.0.0",
+  "description": "Risk Scoring Engine and REST API for Qubic Launches",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "migrate": "ts-node src/db/migrate.ts",
+    "seed": "ts-node src/db/seed.ts",
+    "test:rpc": "ts-node src/utils/testRpc.ts",
+    "test:scoring": "ts-node src/utils/testScoring.ts",
+    "test:api": "ts-node src/utils/testApi.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "qubic",
+    "nostromo",
+    "risk-scoring",
+    "launchpad"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6"
+  }
+}

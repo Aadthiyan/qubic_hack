@@ -1,0 +1,319 @@
+{
+    "info": {
+        "name": "Nostromo Guardian API",
+        "description": "Complete API collection for Nostromo Guardian risk scoring platform",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "version": "1.0.0"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:4000",
+            "type": "string"
+        },
+        {
+            "key": "projectId",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Health & Info",
+            "item": [
+                {
+                    "name": "API Info",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/health",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "health"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Simulate",
+            "item": [
+                {
+                    "name": "Simulate Green Project",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"QubicSwap DEX\",\n  \"teamAllocationPercent\": 10,\n  \"teamVestingMonths\": 24,\n  \"hasFounderLocks\": true,\n  \"supplyDistributionFair\": true,\n  \"hasWhitepaper\": true,\n  \"hasRoadmap\": true,\n  \"documentationClarity\": 9,\n  \"priorProjects\": 3,\n  \"trackRecord\": \"good\",\n  \"twitterFollowers\": 15000,\n  \"discordMembers\": 5000,\n  \"githubActivity\": 9,\n  \"hasAudit\": true,\n  \"hasBugBounty\": true,\n  \"hasKYC\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/simulate",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "simulate"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Simulate Yellow Project",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"QubicPay Gateway\",\n  \"teamAllocationPercent\": 25,\n  \"teamVestingMonths\": 12,\n  \"hasFounderLocks\": true,\n  \"supplyDistributionFair\": false,\n  \"hasWhitepaper\": true,\n  \"hasRoadmap\": true,\n  \"documentationClarity\": 6,\n  \"priorProjects\": 1,\n  \"trackRecord\": \"neutral\",\n  \"twitterFollowers\": 2000,\n  \"discordMembers\": 800,\n  \"githubActivity\": 5,\n  \"hasAudit\": false,\n  \"hasBugBounty\": false,\n  \"hasKYC\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/simulate",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "simulate"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Simulate Red Project",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"MoonQubic\",\n  \"teamAllocationPercent\": 40,\n  \"teamVestingMonths\": 0,\n  \"hasFounderLocks\": false,\n  \"supplyDistributionFair\": false,\n  \"hasWhitepaper\": false,\n  \"hasRoadmap\": false,\n  \"documentationClarity\": 3,\n  \"priorProjects\": 0,\n  \"trackRecord\": \"neutral\",\n  \"twitterFollowers\": 500,\n  \"discordMembers\": 200,\n  \"githubActivity\": 2,\n  \"hasAudit\": false,\n  \"hasBugBounty\": false,\n  \"hasKYC\": false\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/simulate",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "simulate"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Projects",
+            "item": [
+                {
+                    "name": "List Projects",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/projects?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "projects"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Project by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/projects/{{projectId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "projects",
+                                "{{projectId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Project",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Project\",\n  \"description\": \"A test project for API validation\",\n  \"websiteUrl\": \"https://testproject.io\",\n  \"whitepaperUrl\": \"https://docs.testproject.io/wp.pdf\",\n  \"githubUrl\": \"https://github.com/testproject\",\n  \"twitterHandle\": \"@TestProject\",\n  \"discordInvite\": \"https://discord.gg/testproject\",\n  \"teamAllocationPercent\": 15,\n  \"teamVestingMonths\": 24,\n  \"hasFounderLocks\": true,\n  \"supplyDistributionFair\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/projects",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "projects"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Analytics",
+            "item": [
+                {
+                    "name": "Get Analytics",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/analytics",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "analytics"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Risk Flag Stats",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/analytics/flags",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "analytics",
+                                "flags"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Scores",
+            "item": [
+                {
+                    "name": "Recalculate Score",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/scores/{{projectId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "scores",
+                                "{{projectId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Score History",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/scores/{{projectId}}/history?limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "scores",
+                                "{{projectId}}",
+                                "history"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}

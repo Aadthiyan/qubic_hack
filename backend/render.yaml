@@ -1,0 +1,51 @@
+# Render.com Deployment Configuration
+# https://render.com
+
+# Service Type: Web Service
+# Environment: Docker
+# Region: Oregon (US West) or closest to your users
+
+# Build Command (if not using Docker)
+# npm install && npm run build
+
+# Start Command (if not using Docker)
+# npm start
+
+# Health Check Path
+# /api/health
+
+# Auto-Deploy
+# Yes (on push to main branch)
+
+services:
+  - type: web
+    name: nostromo-guardian-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: ./backend
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nostromo-db
+          property: connectionString
+      - key: CORS_ORIGIN
+        value: https://your-frontend.vercel.app
+      - key: API_KEY
+        generateValue: true
+      - key: QUBIC_RPC_URL
+        value: https://rpc.qubic.org
+
+databases:
+  - name: nostromo-db
+    databaseName: nostromo_guardian
+    user: admin
+    plan: free
+    region: oregon
