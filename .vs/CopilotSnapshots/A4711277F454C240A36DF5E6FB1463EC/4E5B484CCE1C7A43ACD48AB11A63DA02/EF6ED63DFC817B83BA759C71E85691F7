@@ -1,0 +1,75 @@
+﻿param(
+    [string]$SolutionPath = ".\Qubic.sln",
+    [string]$Configuration = "Release",
+    [string]$Platform = "x64"
+)
+
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$toolsDir = Join-Path $scriptDir '..\tools' | Resolve-Path -Relative
+$toolsDir = Join-Path $scriptDir '..\tools'
+
+if (-not (Test-Path $toolsDir)) {
+    New-Item -ItemType Directory -Path $toolsDir | Out-Null
+}
+
+$nugetPath = Join-Path $toolsDir 'nuget.exe'
+
+if (-not (Test-Path $nugetPath)) {
+    Write-Host "Downloading nuget.exe to $nugetPath..."
+    try {
+        Invoke-WebRequest -Uri 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile $nugetPath -UseBasicParsing
+    } catch {
+        Write-Error "Failed to download nuget.exe: $_"
+        exit 1
+    }
+}
+
+Write-Host "Restoring NuGet packages for solution: $SolutionPath"
+& $nugetPath restore $SolutionPath
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "nuget restore failed (exit $LASTEXITCODE). Run this script from a Developer Command Prompt or ensure network access to nuget.org."
+    exit $LASTEXITCODE
+}
+
+# Locate MSBuild
+$msbuildPath = $null
+$msbuildCmd = 'msbuild'
+if (Get-Command $msbuildCmd -ErrorAction SilentlyContinue) {
+    $msbuildPath = (Get-Command $msbuildCmd).Source
+} else {
+    $vswhere = "$env:ProgramFiles(x86)\Microsoft Visual Studio\Installer\vswhere.exe"
+    if (Test-Path $vswhere) {
+        $inst = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath 2>$null
+        if ($inst) {
+            $candidate = Join-Path $inst 'MSBuild\Current\Bin\MSBuild.exe'
+            if (Test-Path $candidate) { $msbuildPath = $candidate }
+        }
+    }
+
+    # fallback common locations
+    if (-not $msbuildPath) {
+        $commonCandidates = @(
+            "$env:ProgramFiles\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe",
+            "$env:ProgramFiles\Microsoft Visual Studio\17\Community\MSBuild\Current\Bin\MSBuild.exe",
+            "$env:ProgramFiles\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe",
+            "$env:ProgramFiles(x86)\MSBuild\14.0\Bin\MSBuild.exe"
+        )
+        foreach ($c in $commonCandidates) {
+            if (Test-Path $c) { $msbuildPath = $c; break }
+        }
+    }
+}
+
+if (-not $msbuildPath) {
+    Write-Error "MSBuild executable not found. Open 'Developer Command Prompt for Visual Studio' or install MSBuild and ensure it's on PATH."
+    exit 1
+}
+
+Write-Host "Running MSBuild (Rebuild $Configuration|$Platform) using: $msbuildPath"
+& $msbuildPath $SolutionPath /t:Rebuild /p:Configuration=$Configuration /p:Platform=$Platform
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "MSBuild failed (exit $LASTEXITCODE)."
+    exit $LASTEXITCODE
+}
+
+Write-Host "Restore and build completed successfully."

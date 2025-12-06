@@ -97,7 +97,7 @@ validate_contract() {
 deploy_to_testnet() {
     print_header "Deploying to Testnet"
     
-    export QUBIC_RPC_URL="https://testnet-rpc.qubic.org"
+    export QUBIC_RPC_URL="https://testnet-rpc.qubicdev.com"
     
     print_info "Network: Testnet"
     print_info "RPC: $QUBIC_RPC_URL"

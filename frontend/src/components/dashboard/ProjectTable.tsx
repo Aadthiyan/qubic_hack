@@ -101,7 +101,7 @@ export default function ProjectTable({ projects, isLoading }: ProjectTableProps)
                     <div key={project.id} className="p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-colors">
                         <div className="flex justify-between items-start mb-3">
                             <h3 className="font-semibold text-white">{project.name}</h3>
-                            <button className="text-gray-500 hover:text-white">
+                            <button className="text-gray-500 hover:text-white" aria-label="More options">
                                 <MoreVertical size={16} />
                             </button>
                         </div>

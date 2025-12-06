@@ -1,0 +1,42 @@
+﻿param(
+    [string]$SolutionPath = ".\Qubic.sln",
+    [string]$Configuration = "Release",
+    [string]$Platform = "x64"
+)
+
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$toolsDir = Join-Path $scriptDir '..\tools' | Resolve-Path -Relative
+$toolsDir = Join-Path $scriptDir '..\tools'
+
+if (-not (Test-Path $toolsDir)) {
+    New-Item -ItemType Directory -Path $toolsDir | Out-Null
+}
+
+$nugetPath = Join-Path $toolsDir 'nuget.exe'
+
+if (-not (Test-Path $nugetPath)) {
+    Write-Host "Downloading nuget.exe to $nugetPath..."
+    try {
+        Invoke-WebRequest -Uri 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile $nugetPath -UseBasicParsing
+    } catch {
+        Write-Error "Failed to download nuget.exe: $_"
+        exit 1
+    }
+}
+
+Write-Host "Restoring NuGet packages for solution: $SolutionPath"
+& $nugetPath restore $SolutionPath
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "nuget restore failed (exit $LASTEXITCODE). Run this script from a Developer Command Prompt or ensure network access to nuget.org."
+    exit $LASTEXITCODE
+}
+
+Write-Host "Running MSBuild (Rebuild $Configuration|$Platform)..."
+$msbuildCmd = "msbuild"
+& $msbuildCmd $SolutionPath /t:Rebuild /p:Configuration=$Configuration /p:Platform=$Platform
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "MSBuild failed (exit $LASTEXITCODE)."
+    exit $LASTEXITCODE
+}
+
+Write-Host "Restore and build completed successfully."
