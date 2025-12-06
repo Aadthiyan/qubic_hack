@@ -3,9 +3,8 @@ node_modules
 npm-debug.log
 
 # TypeScript
-*.ts
-!*.d.ts
-tsconfig.json
+# TypeScript
+# *.ts - Commented out to ensure source is copied
 
 # Environment files
 .env
