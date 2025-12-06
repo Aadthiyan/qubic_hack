@@ -103,11 +103,18 @@ export interface SimulateRequest {
 
 export interface AnalyticsResponse {
     totalProjects: number;
-    averageScore: number;
-    scoreDistribution: {
+    avgScore: number;
+    distribution: {
         green: number;
         yellow: number;
         red: number;
     };
-    topProjects: Project[];
+    statusCounts: Record<string, number>;
+    detailedDistribution: Array<{
+        grade: string;
+        count: number;
+        avgScore: number;
+        minScore: number;
+        maxScore: number;
+    }>;
 }
