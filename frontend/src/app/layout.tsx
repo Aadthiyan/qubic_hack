@@ -1,19 +1,29 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata } from 'next';
+import { Inter, Outfit } from 'next/font/google';
+import './globals.css';
+import QueryProvider from '../providers/QueryProvider';
+import Layout from '../components/layout/Layout';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
 
 export const metadata: Metadata = {
-    title: 'Nostromo Guardian - Risk Scoring for Qubic Launches',
-    description: 'Dynamic risk assessment protocol for the Nostromo launchpad',
-}
+    title: 'Nostromo Guardian | Risk Scoring Protocol',
+    description: 'AI-driven risk assessment and scoring engine for Qubic ecosystem launches.',
+};
 
 export default function RootLayout({
     children,
 }: {
-    children: React.ReactNode
+    children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
-            <body>{children}</body>
+        <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
+            <body className={inter.className}>
+                <QueryProvider>
+                    <Layout>{children}</Layout>
+                </QueryProvider>
+            </body>
         </html>
-    )
+    );
 }
