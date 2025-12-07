@@ -84,6 +84,20 @@ export default function SandboxPage() {
         }
     }, [debouncedForm, simulate, isMounted]);
 
+    const safeBreakdown = React.useMemo(() => {
+        return result?.breakdown || {
+            tokenomics: 0,
+            vesting: 0,
+            documentation: 0,
+            teamHistory: 0,
+            community: 0,
+            audit: 0,
+            launchReadiness: 0,
+        };
+    }, [result]);
+
+    const safeFlags = React.useMemo(() => result?.flags || [], [result]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
 
@@ -295,18 +309,30 @@ export default function SandboxPage() {
 
                             <div className="h-[250px]">
                                 {/* Using a dummy score object for the radar chart based on simulation result */}
-                                <ScoreRadar score={{
-                                    ...result.breakdown,
-                                    score: result.score,
-                                    grade: result.grade,
-                                    tokenomicsScore: result.breakdown?.tokenomics || 0,
-                                    vestingScore: result.breakdown?.vesting || 0,
-                                    documentationScore: result.breakdown?.documentation || 0,
-                                    teamHistoryScore: result.breakdown?.teamHistory || 0,
-                                    communityScore: result.breakdown?.community || 0,
-                                    auditScore: result.breakdown?.audit || 0,
-                                    launchReadinessScore: result.breakdown?.launchReadiness || 0,
-                                } as any} />
+                                {result ? (
+                                    <ScoreRadar score={{
+                                        tokenomics: safeBreakdown.tokenomics || 0,
+                                        vesting: safeBreakdown.vesting || 0,
+                                        documentation: safeBreakdown.documentation || 0,
+                                        teamHistory: safeBreakdown.teamHistory || 0,
+                                        community: safeBreakdown.community || 0,
+                                        audit: safeBreakdown.audit || 0,
+                                        launchReadiness: safeBreakdown.launchReadiness || 0,
+                                        score: result.score || 0,
+                                        grade: result.grade || 'Red',
+                                        tokenomicsScore: safeBreakdown.tokenomics || 0,
+                                        vestingScore: safeBreakdown.vesting || 0,
+                                        documentationScore: safeBreakdown.documentation || 0,
+                                        teamHistoryScore: safeBreakdown.teamHistory || 0,
+                                        communityScore: safeBreakdown.community || 0,
+                                        auditScore: safeBreakdown.audit || 0,
+                                        launchReadinessScore: safeBreakdown.launchReadiness || 0,
+                                    } as any} />
+                                ) : (
+                                    <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                                        No breakdown data available
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -314,12 +340,12 @@ export default function SandboxPage() {
                         <div className="glass-panel p-6">
                             <h3 className="font-bold text-white mb-4">Dimension Breakdown</h3>
                             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                                <DimensionBar label="Tokenomics" value={result.breakdown.tokenomics} max={20} />
-                                <DimensionBar label="Vesting" value={result.breakdown.vesting} max={20} />
-                                <DimensionBar label="Documentation" value={result.breakdown.documentation} max={15} />
-                                <DimensionBar label="Team History" value={result.breakdown.teamHistory} max={15} />
-                                <DimensionBar label="Community" value={result.breakdown.community} max={15} />
-                                <DimensionBar label="Audit" value={result.breakdown.audit} max={10} />
+                                <DimensionBar label="Tokenomics" value={safeBreakdown.tokenomics || 0} max={20} />
+                                <DimensionBar label="Vesting" value={safeBreakdown.vesting || 0} max={20} />
+                                <DimensionBar label="Documentation" value={safeBreakdown.documentation || 0} max={15} />
+                                <DimensionBar label="Team History" value={safeBreakdown.teamHistory || 0} max={15} />
+                                <DimensionBar label="Community" value={safeBreakdown.community || 0} max={15} />
+                                <DimensionBar label="Audit" value={safeBreakdown.audit || 0} max={10} />
                             </div>
                         </div>
 
@@ -355,16 +381,16 @@ export default function SandboxPage() {
                         </div>
 
                         {/* Risk Flags */}
-                        {result.flags.length > 0 && (
+                        {safeFlags.length > 0 && (
                             <div className="glass-panel p-6 border-l-4 border-l-red-500">
                                 <h3 className="font-bold text-white mb-4 flex items-center gap-2">
                                     <AlertCircle size={18} className="text-red-400" />
                                     Risk Flags Detected
                                 </h3>
                                 <div className="space-y-2">
-                                    {result.flags.map((flag, i) => (
+                                    {safeFlags.map((flag: any, i: number) => (
                                         <div key={i} className="text-sm text-red-200 bg-red-500/10 px-3 py-2 rounded">
-                                            • {flag.text}
+                                            • {typeof flag === 'string' ? flag : flag.text}
                                         </div>
                                     ))}
                                 </div>
