@@ -38,12 +38,36 @@ export default function SandboxPage() {
     const { mutate: simulate, isPending } = useSimulate();
     const router = useRouter();
     const [isSaving, setIsSaving] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // Trigger simulation when debounced form changes
     useEffect(() => {
+        setError(null);
         simulate(debouncedForm, {
-            onSuccess: (data) => setResult(data),
-            onError: (err) => console.error('Simulation failed', err),
+            onSuccess: (data) => {
+                setResult(data);
+                setError(null);
+            },
+            onError: (err) => {
+                console.error('Simulation failed', err);
+                setError('Failed to calculate score. Please check your connection.');
+                // Set a default result to prevent crashes
+                setResult({
+                    score: 0,
+                    grade: 'Red' as any,
+                    breakdown: {
+                        tokenomics: 0,
+                        vesting: 0,
+                        documentation: 0,
+                        teamHistory: 0,
+                        community: 0,
+                        audit: 0,
+                        launchReadiness: 0,
+                    },
+                    flags: [],
+                    recommendation: 'Unable to calculate score. Please try again.',
+                });
+            },
         });
     }, [debouncedForm, simulate]);
 
@@ -228,6 +252,14 @@ export default function SandboxPage() {
                         <Save size={16} /> {isSaving ? 'Saving...' : 'Save Draft'}
                     </button>
                 </div>
+
+                {/* Error Message */}
+                {error && (
+                    <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-2 text-red-400">
+                        <AlertCircle size={20} />
+                        <span>{error}</span>
+                    </div>
+                )}
 
                 {result ? (
                     <div className="space-y-6 overflow-y-auto pr-2 custom-scrollbar pb-10">
