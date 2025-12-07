@@ -109,7 +109,7 @@ export default function SandboxPage() {
         setForm((prev) => ({
             ...prev,
             [name]: type === 'checkbox' ? checked :
-                type === 'number' || type === 'range' ? Number(value) : value,
+                type === 'number' || type === 'range' ? Math.round(Number(value)) : value,
         }));
     };
 
