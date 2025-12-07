@@ -119,11 +119,11 @@ export default function SandboxPage() {
         try {
             // Construct payload matching ProjectSubmissionData
             const payload = {
-                name: form.name,
+                name: form.name.trim(),
                 description: `Risk assessment simulation for ${form.name}`,
                 websiteUrl: 'https://example.com',
-                teamAllocationPercent: form.teamAllocationPercent,
-                teamVestingMonths: form.teamVestingMonths,
+                teamAllocationPercent: Math.round(form.teamAllocationPercent),
+                teamVestingMonths: Math.round(form.teamVestingMonths),
                 hasFounderLocks: form.hasFounderLocks,
                 supplyDistributionFair: form.supplyDistributionFair,
                 // Optional: pass other metrics as part of creating a richer profile if backend supports it later
