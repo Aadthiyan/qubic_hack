@@ -14,8 +14,6 @@
 
 - **📺 Video Demo:** [Watch on Google Drive](https://drive.google.com/file/d/1ZTKw_z1HTPGWMlA6zKdI4dYRaVR32ZrC/view?usp=sharing)
 - **� Live Demo:** [https://qubic-hack.vercel.app/](https://qubic-hack.vercel.app/)
-- **📄 Pitch Deck:** [View Slides](./PITCH_DECK_COMPLETE.md)
-- **⚙️ GitHub Repo:** [Aadthiyan/qubic_hack](https://github.com/Aadthiyan/qubic_hack)
 
 ---
 
@@ -104,16 +102,6 @@ Visit `http://localhost:3000` to access the dashboard.
 *   🟢 **80-100**: Low Risk (Safe for Launch)
 *   🟡 **50-79**: Medium Risk (Proceed with Caution)
 *   🔴 **0-49**: High Risk (Uninvestable)
-
----
-
-## 👥 Hackathon Team
-
-Built for the **Qubic Hackathon 2025**.
-
-*   **Logic & Backend**: [Your Name/Team]
-*   **UI/UX**: [Your Name/Team]
-*   **Smart Contract**: [Your Name/Team]
 
 ---
 
