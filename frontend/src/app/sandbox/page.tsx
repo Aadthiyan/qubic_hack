@@ -39,37 +39,50 @@ export default function SandboxPage() {
     const router = useRouter();
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isMounted, setIsMounted] = useState(false);
+
+    // Set mounted state
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     // Trigger simulation when debounced form changes
     useEffect(() => {
+        if (!isMounted) return; // Don't run on first render
+
         setError(null);
-        simulate(debouncedForm, {
-            onSuccess: (data) => {
-                setResult(data);
-                setError(null);
-            },
-            onError: (err) => {
-                console.error('Simulation failed', err);
-                setError('Failed to calculate score. Please check your connection.');
-                // Set a default result to prevent crashes
-                setResult({
-                    score: 0,
-                    grade: 'Red' as any,
-                    breakdown: {
-                        tokenomics: 0,
-                        vesting: 0,
-                        documentation: 0,
-                        teamHistory: 0,
-                        community: 0,
-                        audit: 0,
-                        launchReadiness: 0,
-                    },
-                    flags: [],
-                    recommendation: 'Unable to calculate score. Please try again.',
-                });
-            },
-        });
-    }, [debouncedForm, simulate]);
+        try {
+            simulate(debouncedForm, {
+                onSuccess: (data) => {
+                    setResult(data);
+                    setError(null);
+                },
+                onError: (err) => {
+                    console.error('Simulation failed', err);
+                    setError('Failed to calculate score. Please check your connection.');
+                    // Set a default result to prevent crashes
+                    setResult({
+                        score: 0,
+                        grade: 'Red' as any,
+                        breakdown: {
+                            tokenomics: 0,
+                            vesting: 0,
+                            documentation: 0,
+                            teamHistory: 0,
+                            community: 0,
+                            audit: 0,
+                            launchReadiness: 0,
+                        },
+                        flags: [],
+                        recommendation: 'Unable to calculate score. Please try again.',
+                    });
+                },
+            });
+        } catch (err) {
+            console.error('Simulation error:', err);
+            setError('An unexpected error occurred.');
+        }
+    }, [debouncedForm, simulate, isMounted]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
