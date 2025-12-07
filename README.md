@@ -97,18 +97,17 @@ Frontend runs at `http://localhost:3000`
 ## 📚 Documentation
 
 ### Project Documentation
-- [Frontend README](./frontend/README.md)
-- [Backend README](./backend/README.md)
-- [Sprint Plan](./Nostromo-Guardian-Sprint-Plan.md)
-- [Complete Build Plan](./Nostromo-Guardian-Complete-Build-Plan.md)
+- [**Architecture**](./ARCHITECTURE.md) - System overview and component diagram.
+- [**API Reference**](./API.md) - Endpoints and authentication.
+- [**Security Policy**](./SECURITY.md) - Data protection and smart contract security.
+- [**Installation Guide**](./INSTALLATION.md) - Setup instructions.
+- [**Database Schema**](./SCHEMA.md) - Entity Relationship Diagram.
+- [**Release Notes**](./RELEASE_NOTES.md) - Version 1.0.0 details.
 
-### Technical Documentation
-- [Database Schema](./SCHEMA.md) - Complete ERD and table specifications
-- [Task 1.5 Status](./TASK_1.5_STATUS.md) - Scoring Service Implementation
-- [Task 1.6 Status](./TASK_1.6_STATUS.md) - REST API Routes
-- [Task 1.7 Status](./TASK_1.7_STATUS.md) - Qubic Smart Contract
-- [Task 1.8 Status](./TASK_1.8_STATUS.md) - Backend Testing & Validation
-- [Task 1.9 Status](./TASK_1.9_STATUS.md) - Backend Deployment Setup
+### Hackathon Status
+* [Final Project Report](./PROJECT_STATUS_REPORT.md)
+* [Submission Checklist](./SUBMISSION_CHECKLIST.md)
+* [Sprint Plan](./Nostromo-Guardian-Sprint-Plan.md)
 
 ## 🏆 Hackathon Details
 
