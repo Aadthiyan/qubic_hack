@@ -18,6 +18,7 @@ import scoreRoutes from './routes/scores';
 import simulateRoutes from './routes/simulate';
 import analyticsRoutes from './routes/analytics';
 import contractRoutes from './routes/contract';
+import docsRoutes from './routes/docs';
 
 // Load environment variables
 dotenv.config();
@@ -109,6 +110,7 @@ export function createApp(): Express {
     app.use('/api/simulate', simulateRoutes);
     app.use('/api/analytics', analyticsRoutes);
     app.use('/api/contract', contractRoutes);
+    app.use('/api/docs', docsRoutes);
 
     // ========================================
     // ERROR HANDLING

@@ -254,13 +254,13 @@ export default function SandboxPage() {
                                     ...result.breakdown,
                                     score: result.score,
                                     grade: result.grade,
-                                    tokenomicsScore: result.breakdown.tokenomics,
-                                    vestingScore: result.breakdown.vesting,
-                                    documentationScore: result.breakdown.documentation,
-                                    teamHistoryScore: result.breakdown.teamHistory,
-                                    communityScore: result.breakdown.community,
-                                    auditScore: result.breakdown.audit,
-                                    launchReadinessScore: result.breakdown.launchReadiness,
+                                    tokenomicsScore: result.breakdown?.tokenomics || 0,
+                                    vestingScore: result.breakdown?.vesting || 0,
+                                    documentationScore: result.breakdown?.documentation || 0,
+                                    teamHistoryScore: result.breakdown?.teamHistory || 0,
+                                    communityScore: result.breakdown?.community || 0,
+                                    auditScore: result.breakdown?.audit || 0,
+                                    launchReadinessScore: result.breakdown?.launchReadiness || 0,
                                 } as any} />
                             </div>
                         </div>

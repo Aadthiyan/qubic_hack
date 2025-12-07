@@ -24,7 +24,14 @@ module.exports = {
                 warning: '#f59e0b',
                 danger: '#ef4444',
             },
+            opacity: {
+                '5': '0.05',
+                '10': '0.1',
+            },
         },
     },
     plugins: [],
+    future: {
+        hoverOnlyWhenSupported: true,
+    },
 }
