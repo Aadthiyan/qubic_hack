@@ -117,20 +117,27 @@ export default function SandboxPage() {
         if (!result) return;
         setIsSaving(true);
         try {
-            // Transform form data to match backend expectation if needed
-            // Assuming backend accepts the same shape as SimulateRequest for creation
-            const { data } = await api.post('/projects', {
-                ...form,
-                description: 'Project created via Sandbox Simulation', // Add default desc
-                websiteUrl: 'https://example.com', // Placeholder
-                // Backend should re-calculate score, but we send the form data
-            });
+            // Construct payload matching ProjectSubmissionData
+            const payload = {
+                name: form.name,
+                description: `Risk assessment simulation for ${form.name}`,
+                websiteUrl: 'https://example.com',
+                teamAllocationPercent: form.teamAllocationPercent,
+                teamVestingMonths: form.teamVestingMonths,
+                hasFounderLocks: form.hasFounderLocks,
+                supplyDistributionFair: form.supplyDistributionFair,
+                // Optional: pass other metrics as part of creating a richer profile if backend supports it later
+                // For now, this matches the backend expectation
+            };
+
+            const { data } = await api.post('/projects', payload);
 
             toast.success('Project saved successfully!');
             router.push(`/projects/${data.data.id}`);
-        } catch (error) {
-            console.error(error);
-            toast.error('Failed to save project. Please try again.');
+        } catch (error: any) {
+            console.error('Save failed:', error);
+            const msg = error.response?.data?.error?.message || error.response?.data?.message || 'Failed to save project. Please try again.';
+            toast.error(msg);
         } finally {
             setIsSaving(false);
         }
