@@ -27,7 +27,9 @@ Nostromo Guardian is a risk scoring protocol for the Qubic ecosystem. It analyze
 ### 3. Smart Contract (Qubic C++)
 - [x] **Contract Logic**: `GuardianScore.cpp` written and documented.
 - [x] **Compilation**: Verified via `g++` syntax check.
-- [x] **Procedures**: SetScore, GetScore, CanLaunchIDO implemented.
+- [x] **Deployment**: ✅ **DEPLOYED TO TESTNET**.
+    - Tx Hash: `rjxehbqtamjjxbcbmoyejabmqwhbtxbacwfrcqljtettpbtgypbggghaxuvk`
+    - Wallet: `FXDOQRIHOGJVKHUDVEVMYMMEJHZBGGATOMHTSVNKICQGXOLUYIOJSDOEYAPE`
 
 ---
 
@@ -40,9 +42,8 @@ Nostromo Guardian is a risk scoring protocol for the Qubic ecosystem. It analyze
 ---
 
 ## ⏭️ Next Steps (Post-Hackathon)
-1. **Qubic Testnet Deployment**: Deploy the compiled `GuardianScore` contract using the official Qubic CLI (requires Testnet seed).
-2. **Oracle Integration**: Connect the Backend API to the Smart Contract via an Oracle service to push scores on-chain automatically.
-3. **Mainnet Launch**: Audit the scoring algorithm and deploy to Qubic Mainnet.
+1. **Oracle Integration**: Connect the Backend API to the Smart Contract via an Oracle service to push scores on-chain automatically.
+2. **Mainnet Launch**: Audit the scoring algorithm and deploy to Qubic Mainnet.
 
 ---
 

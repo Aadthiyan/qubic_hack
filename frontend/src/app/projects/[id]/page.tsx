@@ -6,6 +6,34 @@ import { useProject } from '../../../hooks/useProjects';
 import { ArrowLeft, ExternalLink, Shield, AlertTriangle, CheckCircle, Github, Globe, FileText, Twitter, Lock } from 'lucide-react';
 import ScoreRadar from '../../../components/detail/ScoreRadar';
 import { motion } from 'framer-motion';
+import { useContractScore } from '../../../hooks/useContract';
+
+const ContractVerification = ({ projectId }: { projectId: string }) => {
+    const { data, isLoading, isError } = useContractScore(projectId);
+
+    if (isLoading) return <div className="text-xs text-gray-500 animate-pulse px-3 py-1.5 border border-transparent">Verifying...</div>;
+
+    if (isError || !data) return (
+        // In a real generic demo, we might hide this if contract not deployed for specific project
+        // But for demo purposes, let's show an error or just nothing
+        <div className="flex items-center gap-2 text-gray-500 text-xs bg-white/5 px-3 py-1.5 rounded-lg border border-white/10" title="Contract data unavailable">
+            <Shield size={12} /> Not On-Chain
+        </div>
+    );
+
+    return (
+        <a
+            href={`https://explorer.qubic.org/address/${process.env.NEXT_PUBLIC_GUARDIAN_CONTRACT_ADDRESS}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 text-green-400 text-xs bg-green-500/10 px-3 py-1.5 rounded-lg border border-green-500/20 hover:bg-green-500/20 transition"
+        >
+            <CheckCircle size={12} />
+            <span>On-Chain Verified</span>
+            <ExternalLink size={10} className="ml-1 opacity-50" />
+        </a>
+    );
+};
 
 export default function ProjectDetailPage({ params }: { params: { id: string } }) {
     const { data: projectData, isLoading, isError } = useProject(params.id);
@@ -40,6 +68,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                             <span className={`px-3 py-1 rounded-full text-sm font-bold border ${getGradeColor(score?.grade || 'Gray')}`}>
                                 {score?.grade || 'Pending'}
                             </span>
+                            <ContractVerification projectId={project.id} />
                         </div>
                         <p className="text-gray-400 max-w-2xl text-lg">{project.description}</p>
                     </div>
@@ -157,12 +186,12 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                         {score?.flags && score.flags.length > 0 ? (
                             score.flags.map((flag: any, i: number) => (
                                 <div key={i} className={`p-3 rounded-lg border flex gap-3 ${flag.severity === 'high' ? 'bg-red-500/10 border-red-500/20 text-red-200' :
-                                        flag.severity === 'medium' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-200' :
-                                            'bg-blue-500/10 border-blue-500/20 text-blue-200'
+                                    flag.severity === 'medium' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-200' :
+                                        'bg-blue-500/10 border-blue-500/20 text-blue-200'
                                     }`}>
                                     <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${flag.severity === 'high' ? 'bg-red-500' :
-                                            flag.severity === 'medium' ? 'bg-yellow-500' :
-                                                'bg-blue-500'
+                                        flag.severity === 'medium' ? 'bg-yellow-500' :
+                                            'bg-blue-500'
                                         }`} />
                                     <div className="text-sm">{flag.text || flag.flag_text}</div>
                                 </div>

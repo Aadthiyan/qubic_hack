@@ -7,6 +7,9 @@ import { SimulateRequest, SimulateResponse } from '../../types';
 import { AlertCircle, CheckCircle, RefreshCcw, Save } from 'lucide-react';
 import ScoreRadar from '../../components/detail/ScoreRadar';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { api } from '../../utils/api';
+import toast from 'react-hot-toast';
 
 const defaultForm: SimulateRequest = {
     name: 'My New Project',
@@ -31,7 +34,10 @@ export default function SandboxPage() {
     const [form, setForm] = useState<SimulateRequest>(defaultForm);
     const [result, setResult] = useState<SimulateResponse | null>(null);
     const debouncedForm = useDebounce(form, 500);
+
     const { mutate: simulate, isPending } = useSimulate();
+    const router = useRouter();
+    const [isSaving, setIsSaving] = useState(false);
 
     // Trigger simulation when debounced form changes
     useEffect(() => {
@@ -54,6 +60,29 @@ export default function SandboxPage() {
             [name]: type === 'checkbox' ? checked :
                 type === 'number' || type === 'range' ? Number(value) : value,
         }));
+    };
+
+    const handleSave = async () => {
+        if (!result) return;
+        setIsSaving(true);
+        try {
+            // Transform form data to match backend expectation if needed
+            // Assuming backend accepts the same shape as SimulateRequest for creation
+            const { data } = await api.post('/projects', {
+                ...form,
+                description: 'Project created via Sandbox Simulation', // Add default desc
+                websiteUrl: 'https://example.com', // Placeholder
+                // Backend should re-calculate score, but we send the form data
+            });
+
+            toast.success('Project saved successfully!');
+            router.push(`/projects/${data.data.id}`);
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to save project. Please try again.');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
@@ -191,8 +220,12 @@ export default function SandboxPage() {
                         {isPending && <RefreshCcw size={18} className="animate-spin text-blue-400" />}
                         Live Assessment
                     </h2>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium hover:bg-white/10 transition">
-                        <Save size={16} /> Save Draft
+                    <button
+                        onClick={handleSave}
+                        disabled={!result || isSaving}
+                        className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium hover:bg-white/10 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <Save size={16} /> {isSaving ? 'Saving...' : 'Save Draft'}
                     </button>
                 </div>
 

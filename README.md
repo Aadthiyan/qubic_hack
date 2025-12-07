@@ -88,6 +88,12 @@ Frontend runs at `http://localhost:3000`
 - **Blockchain**: Qubic (C++ smart contracts)
 - **Infrastructure**: Docker, Docker Compose
 
+## ⛓️ Smart Contract
+**Deployed on Qubic Testnet** ✅
+- **Contract ID**: `FXDOQRIHOGJVKHUDVEVMYMMEJHZBGGATOMHTSVNKICQGXOLUYIOJSDOEYAPE`
+- **Tx Hash**: `rjxehbqtamjjxbcbmoyejabmqwhbtxbacwfrcqljtettpbtgypbggghaxuvk`
+
+
 ## 📚 Documentation
 
 ### Project Documentation
