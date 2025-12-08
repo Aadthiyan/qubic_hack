@@ -22,7 +22,12 @@ export class ProjectService {
             const offset = (page - 1) * limit;
 
             // Build query
-            let queryText = 'SELECT * FROM projects';
+            let queryText = `
+                SELECT p.*, 
+                (SELECT score FROM scores WHERE project_id = p.id ORDER BY calculated_at DESC LIMIT 1) as score,
+                (SELECT grade FROM scores WHERE project_id = p.id ORDER BY calculated_at DESC LIMIT 1) as grade
+                FROM projects p
+            `;
             const params: any[] = [];
 
             if (status) {

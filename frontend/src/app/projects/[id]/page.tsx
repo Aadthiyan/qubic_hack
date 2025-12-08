@@ -14,8 +14,6 @@ const ContractVerification = ({ projectId }: { projectId: string }) => {
     if (isLoading) return <div className="text-xs text-gray-500 animate-pulse px-3 py-1.5 border border-transparent">Verifying...</div>;
 
     if (isError || !data) return (
-        // In a real generic demo, we might hide this if contract not deployed for specific project
-        // But for demo purposes, let's show an error or just nothing
         <div className="flex items-center gap-2 text-gray-500 text-xs bg-white/5 px-3 py-1.5 rounded-lg border border-white/10" title="Contract data unavailable">
             <Shield size={12} /> Not On-Chain
         </div>
@@ -36,12 +34,55 @@ const ContractVerification = ({ projectId }: { projectId: string }) => {
 };
 
 export default function ProjectDetailPage({ params }: { params: { id: string } }) {
-    const { data: projectData, isLoading, isError } = useProject(params.id);
+    const { data: projectData, isLoading, isError, error } = useProject(params.id);
 
     if (isLoading) return <div className="p-12 text-center text-gray-500">Loading project details...</div>;
-    if (isError || !projectData) return <div className="p-12 text-center text-red-400">Error loading project.</div>;
+
+    if (isError || !projectData) {
+        console.error("Project Load Error:", error);
+        return <div className="p-12 text-center text-red-400">Error loading project.</div>;
+    }
 
     const { project, metadata, score, config } = projectData;
+
+    // Transform DB snake_case to Frontend camelCase
+    const safeProject = {
+        ...project,
+        websiteUrl: project.website_url || project.websiteUrl,
+        whitepaperUrl: project.whitepaper_url || project.whitepaperUrl,
+        githubUrl: project.github_url || project.githubUrl,
+        twitterHandle: project.twitter_handle || project.twitterHandle,
+    };
+
+    const safeScore = score ? {
+        ...score,
+        tokenomicsScore: score.tokenomics_score ?? score.tokenomicsScore,
+        vestingScore: score.vesting_score ?? score.vestingScore,
+        documentationScore: score.documentation_score ?? score.documentationScore,
+        teamHistoryScore: score.team_history_score ?? score.teamHistoryScore,
+        communityScore: score.community_score ?? score.communityScore,
+        auditScore: score.audit_score ?? score.auditScore,
+        launchReadinessScore: score.launch_readiness_score ?? score.launchReadinessScore,
+        grade: score.grade, // usually same
+        score: score.score, // usually same
+        flags: score.flags || [],
+    } : null;
+
+    const safeMetadata = metadata ? {
+        ...metadata,
+        teamAllocationPercent: metadata.team_allocation_percent ?? metadata.teamAllocationPercent,
+        teamVestingMonths: metadata.team_vesting_months ?? metadata.teamVestingMonths,
+        hasFounderLocks: metadata.has_founder_locks ?? metadata.hasFounderLocks,
+        totalSupply: metadata.total_supply ?? metadata.totalSupply,
+    } : null;
+
+    const safeConfig = config ? {
+        ...config,
+        capMin: config.cap_min ?? config.capMin,
+        capMax: config.cap_max ?? config.capMax,
+        feeTierPercent: config.fee_tier_percent ?? config.feeTierPercent,
+        accessTier: config.access_tier ?? config.accessTier,
+    } : null;
 
     // Helper for grade colors
     const getGradeColor = (grade: string) => {
@@ -64,33 +105,33 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                 <div className="flex flex-col md:flex-row justify-between md:items-start gap-6">
                     <div>
                         <div className="flex items-center gap-4 mb-2">
-                            <h1 className="text-4xl font-bold text-white">{project.name}</h1>
-                            <span className={`px-3 py-1 rounded-full text-sm font-bold border ${getGradeColor(score?.grade || 'Gray')}`}>
-                                {score?.grade || 'Pending'}
+                            <h1 className="text-4xl font-bold text-white">{safeProject.name}</h1>
+                            <span className={`px-3 py-1 rounded-full text-sm font-bold border ${getGradeColor(safeScore?.grade || 'Gray')}`}>
+                                {safeScore?.grade || 'Pending'}
                             </span>
-                            <ContractVerification projectId={project.id} />
+                            <ContractVerification projectId={safeProject.id} />
                         </div>
-                        <p className="text-gray-400 max-w-2xl text-lg">{project.description}</p>
+                        <p className="text-gray-400 max-w-2xl text-lg">{safeProject.description}</p>
                     </div>
 
                     <div className="flex gap-3">
-                        {project.websiteUrl && (
-                            <a href={project.websiteUrl} target="_blank" rel="noreferrer" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition text-gray-400 hover:text-white">
+                        {safeProject.websiteUrl && (
+                            <a href={safeProject.websiteUrl} target="_blank" rel="noreferrer" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition text-gray-400 hover:text-white">
                                 <Globe size={20} />
                             </a>
                         )}
-                        {project.twitterHandle && (
-                            <a href={`https://twitter.com/${project.twitterHandle.replace('@', '')}`} target="_blank" rel="noreferrer" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition text-gray-400 hover:text-white">
+                        {safeProject.twitterHandle && (
+                            <a href={`https://twitter.com/${safeProject.twitterHandle.replace('@', '')}`} target="_blank" rel="noreferrer" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition text-gray-400 hover:text-white">
                                 <Twitter size={20} />
                             </a>
                         )}
-                        {project.githubUrl && (
-                            <a href={project.githubUrl} target="_blank" rel="noreferrer" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition text-gray-400 hover:text-white">
+                        {safeProject.githubUrl && (
+                            <a href={safeProject.githubUrl} target="_blank" rel="noreferrer" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition text-gray-400 hover:text-white">
                                 <Github size={20} />
                             </a>
                         )}
-                        {project.whitepaperUrl && (
-                            <a href={project.whitepaperUrl} target="_blank" rel="noreferrer" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition text-gray-400 hover:text-white">
+                        {safeProject.whitepaperUrl && (
+                            <a href={safeProject.whitepaperUrl} target="_blank" rel="noreferrer" className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition text-gray-400 hover:text-white">
                                 <FileText size={20} />
                             </a>
                         )}
@@ -110,23 +151,23 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                             <Shield className="text-blue-400" /> Security Score Breakdown
                         </h3>
                         <div className="text-right">
-                            <div className="text-3xl font-bold text-white">{score?.score || 0}<span className="text-gray-500 text-lg">/100</span></div>
+                            <div className="text-3xl font-bold text-white">{safeScore?.score || 0}<span className="text-gray-500 text-lg">/100</span></div>
                             <div className="text-sm text-gray-400">Total Score</div>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div className="h-[300px] flex items-center justify-center">
-                            {score ? <ScoreRadar score={score} /> : <div className="text-gray-500">No score data</div>}
+                            {safeScore ? <ScoreRadar score={safeScore} /> : <div className="text-gray-500">No score data</div>}
                         </div>
                         <div className="space-y-4">
-                            <ScoreRow label="Tokenomics" score={score?.tokenomicsScore} max={20} />
-                            <ScoreRow label="Vesting Schedule" score={score?.vestingScore} max={20} />
-                            <ScoreRow label="Documentation" score={score?.documentationScore} max={15} />
-                            <ScoreRow label="Team History" score={score?.teamHistoryScore} max={15} />
-                            <ScoreRow label="Community" score={score?.communityScore} max={15} />
-                            <ScoreRow label="Audit Status" score={score?.auditScore} max={10} />
-                            <ScoreRow label="Launch Readiness" score={score?.launchReadinessScore} max={5} />
+                            <ScoreRow label="Tokenomics" score={safeScore?.tokenomicsScore} max={20} />
+                            <ScoreRow label="Vesting Schedule" score={safeScore?.vestingScore} max={20} />
+                            <ScoreRow label="Documentation" score={safeScore?.documentationScore} max={15} />
+                            <ScoreRow label="Team History" score={safeScore?.teamHistoryScore} max={15} />
+                            <ScoreRow label="Community" score={safeScore?.communityScore} max={15} />
+                            <ScoreRow label="Audit Status" score={safeScore?.auditScore} max={10} />
+                            <ScoreRow label="Launch Readiness" score={safeScore?.launchReadinessScore} max={5} />
                         </div>
                     </div>
                 </motion.div>
@@ -139,28 +180,28 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                     className="glass-panel p-6 bg-gradient-to-b from-blue-900/20 to-transparent border-blue-500/20"
                 >
                     <h3 className="text-lg font-bold mb-4 text-blue-200">Recommended Launch Config</h3>
-                    {config ? (
+                    {safeConfig ? (
                         <div className="space-y-6">
                             <div>
                                 <div className="text-sm text-blue-300/60 mb-1">Recommended Cap</div>
                                 <div className="text-2xl font-mono text-white">
-                                    {(config.capMin / 1000)}k - {(config.capMax / 1000)}k <span className="text-sm text-blue-400">USDT</span>
+                                    {Math.round(safeConfig.capMin / 1000)}k - {Math.round(safeConfig.capMax / 1000)}k <span className="text-sm text-blue-400">USDT</span>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <div className="text-sm text-blue-300/60 mb-1">Platform Fee</div>
-                                    <div className="text-xl font-bold text-white max-w-full truncate">{config.feeTierPercent}%</div>
+                                    <div className="text-xl font-bold text-white max-w-full truncate">{safeConfig.feeTierPercent}%</div>
                                 </div>
                                 <div>
                                     <div className="text-sm text-blue-300/60 mb-1">Access Tier</div>
-                                    <div className="text-xl font-bold text-white capitalize max-w-full truncate">{config.accessTier}</div>
+                                    <div className="text-xl font-bold text-white capitalize max-w-full truncate">{safeConfig.accessTier}</div>
                                 </div>
                             </div>
 
                             <div className="p-3 bg-blue-950/30 rounded-lg border border-blue-500/20 text-sm text-blue-200/80 italic">
-                                "{config.recommendation}"
+                                "{safeConfig.recommendation}"
                             </div>
                         </div>
                     ) : (
@@ -183,8 +224,8 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                     </h3>
 
                     <div className="space-y-3">
-                        {score?.flags && score.flags.length > 0 ? (
-                            score.flags.map((flag: any, i: number) => (
+                        {safeScore?.flags && safeScore.flags.length > 0 ? (
+                            safeScore.flags.map((flag: any, i: number) => (
                                 <div key={i} className={`p-3 rounded-lg border flex gap-3 ${flag.severity === 'high' ? 'bg-red-500/10 border-red-500/20 text-red-200' :
                                     flag.severity === 'medium' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-200' :
                                         'bg-blue-500/10 border-blue-500/20 text-blue-200'
@@ -213,22 +254,22 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                         <CheckCircle className="text-green-400" /> Token Parameters
                     </h3>
 
-                    {metadata ? (
+                    {safeMetadata ? (
                         <div className="space-y-4">
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
                                 <span className="text-gray-400">Team Allocation</span>
-                                <span className={metadata.teamAllocationPercent > 20 ? 'text-yellow-400' : 'text-white'}>
-                                    {metadata.teamAllocationPercent}%
+                                <span className={safeMetadata.teamAllocationPercent > 20 ? 'text-yellow-400' : 'text-white'}>
+                                    {safeMetadata.teamAllocationPercent}%
                                 </span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
                                 <span className="text-gray-400">Vesting Period</span>
-                                <span className="text-white">{metadata.teamVestingMonths} Months</span>
+                                <span className="text-white">{safeMetadata.teamVestingMonths} Months</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
                                 <span className="text-gray-400">Founder Lock</span>
                                 <span className="text-white flex items-center gap-2">
-                                    {metadata.hasFounderLocks ? (
+                                    {safeMetadata.hasFounderLocks ? (
                                         <><Lock size={14} className="text-green-400" /> Locked</>
                                     ) : (
                                         <><AlertTriangle size={14} className="text-red-400" /> Unlocked</>
@@ -237,7 +278,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
                                 <span className="text-gray-400">Total Supply</span>
-                                <span className="text-white font-mono">{parseInt(metadata.totalSupply || '0').toLocaleString()}</span>
+                                <span className="text-white font-mono">{parseInt(safeMetadata.totalSupply || '0').toLocaleString()}</span>
                             </div>
                         </div>
                     ) : (

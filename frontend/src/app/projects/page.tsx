@@ -101,7 +101,7 @@ export default function ProjectsPage() {
 
                                 <div className="flex items-center gap-2 text-xs text-gray-500">
                                     <Calendar size={14} />
-                                    <span>{new Date(project.createdAt).toLocaleDateString()}</span>
+                                    <span>{new Date(project.created_at).toLocaleDateString()}</span>
                                 </div>
                             </div>
                         );
