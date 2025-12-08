@@ -306,15 +306,15 @@ export class ScoringService {
     calculateCompositeScore(input: ScoringInput): ScoreResult {
         logger.info('Calculating composite score', { projectName: input.name });
 
-        // Calculate all dimension scores
+        // Calculate all dimension scores (rounded to integers)
         const subscores: ScoreBreakdown = {
-            tokenomics: this.scoreTokenomics(input),
-            vesting: this.scoreVesting(input),
-            documentation: this.scoreDocumentation(input),
-            teamHistory: this.scoreTeamHistory(input),
-            community: this.scoreCommunity(input),
-            audit: this.scoreAudit(input),
-            launchReadiness: this.scoreLaunchReadiness(input),
+            tokenomics: Math.round(this.scoreTokenomics(input)),
+            vesting: Math.round(this.scoreVesting(input)),
+            documentation: Math.round(this.scoreDocumentation(input)),
+            teamHistory: Math.round(this.scoreTeamHistory(input)),
+            community: Math.round(this.scoreCommunity(input)),
+            audit: Math.round(this.scoreAudit(input)),
+            launchReadiness: Math.round(this.scoreLaunchReadiness(input)),
         };
 
         // Sum all subscores
