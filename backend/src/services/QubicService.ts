@@ -39,8 +39,9 @@ export class QubicService {
             return { raw: decodedResponse };
 
         } catch (error) {
-            console.error('❌ Qubic Contract Read Failed:', error);
-            throw error;
+            console.error('❌ Qubic Contract Read Failed (Returning Null):', error);
+            // Return null to indicate "Not On-Chain" or "Read Failed" without crashing API
+            return null;
         }
     }
 

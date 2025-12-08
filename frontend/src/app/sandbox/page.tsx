@@ -133,7 +133,8 @@ export default function SandboxPage() {
             const { data } = await api.post('/projects', payload);
 
             toast.success('Project saved successfully!');
-            router.push(`/projects/${data.data.id}`);
+            // Backend returns { data: { project: { id: ... } } }
+            router.push(`/projects/${data.data.project.id}`);
         } catch (error: any) {
             console.error('Save failed:', error);
             const msg = error.response?.data?.error?.message || error.response?.data?.message || 'Failed to save project. Please try again.';
