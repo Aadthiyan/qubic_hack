@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation'; // Correct place
 import { useProject } from '../../../hooks/useProjects';
 import { ArrowLeft, ExternalLink, Shield, AlertTriangle, CheckCircle, Github, Globe, FileText, Twitter, Lock } from 'lucide-react';
 import ScoreRadar from '../../../components/detail/ScoreRadar';
@@ -33,8 +34,10 @@ const ContractVerification = ({ projectId }: { projectId: string }) => {
     );
 };
 
-export default function ProjectDetailPage({ params }: { params: { id: string } }) {
-    const { data: projectData, isLoading, isError, error } = useProject(params.id);
+export default function ProjectDetailPage() {
+    const params = useParams<{ id: string }>();
+    const projectId = params?.id || '';
+    const { data: projectData, isLoading, isError, error } = useProject(projectId);
 
     if (isLoading) return <div className="p-12 text-center text-gray-500">Loading project details...</div>;
 

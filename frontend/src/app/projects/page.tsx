@@ -65,12 +65,19 @@ export default function ProjectsPage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {projects.map((project: any) => {
+                        // Handle both camelCase and snake_case properties
+                        const grade = project.grade || project.risk_grade || 'Pending';
+                        const score = project.score || project.risk_score || 0;
+                        const dateStr = project.created_at || project.createdAt;
+
                         const gradeColor =
-                            project.grade === 'Green'
+                            grade === 'Green'
                                 ? 'text-green-400 border-green-500/30 bg-green-500/10'
-                                : project.grade === 'Yellow'
+                                : grade === 'Yellow'
                                     ? 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'
-                                    : 'text-red-400 border-red-500/30 bg-red-500/10';
+                                    : grade === 'Red'
+                                        ? 'text-red-400 border-red-500/30 bg-red-500/10'
+                                        : 'text-gray-400 border-gray-500/30 bg-gray-500/10';
 
                         return (
                             <div
@@ -81,17 +88,19 @@ export default function ProjectsPage() {
                                 <div className="flex justify-between items-start mb-4">
                                     <h3 className="text-lg font-bold text-white">{project.name}</h3>
                                     <div className={`px-3 py-1 rounded-full text-sm font-medium border ${gradeColor}`}>
-                                        {project.grade}
+                                        {grade}
                                     </div>
                                 </div>
 
                                 <div className="flex items-center gap-2 mb-4">
-                                    {project.score >= 70 ? (
+                                    {score >= 70 ? (
                                         <TrendingUp size={20} className="text-green-400" />
+                                    ) : score >= 50 ? (
+                                        <TrendingDown size={20} className="text-yellow-400" />
                                     ) : (
                                         <TrendingDown size={20} className="text-red-400" />
                                     )}
-                                    <span className="text-3xl font-bold text-white">{project.score}</span>
+                                    <span className="text-3xl font-bold text-white">{score}</span>
                                     <span className="text-gray-400">/100</span>
                                 </div>
 
@@ -101,7 +110,7 @@ export default function ProjectsPage() {
 
                                 <div className="flex items-center gap-2 text-xs text-gray-500">
                                     <Calendar size={14} />
-                                    <span>{new Date(project.created_at).toLocaleDateString()}</span>
+                                    <span>{dateStr ? new Date(dateStr).toLocaleDateString() : 'Active'}</span>
                                 </div>
                             </div>
                         );
