@@ -126,8 +126,19 @@ export default function SandboxPage() {
                 teamVestingMonths: Math.round(form.teamVestingMonths),
                 hasFounderLocks: form.hasFounderLocks,
                 supplyDistributionFair: form.supplyDistributionFair,
-                // Optional: pass other metrics as part of creating a richer profile if backend supports it later
-                // For now, this matches the backend expectation
+
+                // Extended metadata for scoring
+                hasWhitepaper: form.hasWhitepaper,
+                hasRoadmap: form.hasRoadmap,
+                documentationClarity: form.documentationClarity,
+                priorProjects: form.priorProjects,
+                trackRecord: form.trackRecord,
+                twitterFollowers: form.twitterFollowers,
+                discordMembers: form.discordMembers,
+                githubActivity: form.githubActivity,
+                hasAudit: form.hasAudit,
+                hasBugBounty: form.hasBugBounty,
+                hasKYC: form.hasKYC,
             };
 
             const { data } = await api.post('/projects', payload);

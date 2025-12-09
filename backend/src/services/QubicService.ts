@@ -30,6 +30,11 @@ export class QubicService {
                 requestData
             );
 
+            // If RPC returned null (network down), return null gracefully
+            if (!response) {
+                return null;
+            }
+
             const decodedResponse = this.rpc.decodeResponseData(response.responseData);
             console.log(`✅ Contract Response: ${decodedResponse}`);
 

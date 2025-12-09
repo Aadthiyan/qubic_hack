@@ -491,6 +491,8 @@ export class ScoringService {
      * Score a project from database
      */
     async scoreProject(project: Project, metadata: ProjectMetadata): Promise<ScoreResult> {
+        const extra = metadata.extra_metadata || {};
+
         const input: ScoringInput = {
             name: project.name,
             whitepaperUrl: project.whitepaperUrl,
@@ -501,18 +503,19 @@ export class ScoringService {
             teamVestingMonths: metadata.teamVestingMonths,
             hasFounderLocks: metadata.hasFounderLocks,
             supplyDistributionFair: metadata.supplyDistributionFair,
-            // These would typically come from external APIs or user input
-            hasWhitepaper: !!project.whitepaperUrl,
-            hasRoadmap: true, // Would check actual roadmap
-            documentationClarity: 7, // Would analyze actual docs
-            priorProjects: 1, // Would check team history
-            trackRecord: 'neutral',
-            twitterFollowers: 1000, // Would fetch from Twitter API
-            discordMembers: 500, // Would fetch from Discord API
-            githubActivity: 5, // Would analyze GitHub commits
-            hasAudit: false, // Would check for audit reports
-            hasBugBounty: false,
-            hasKYC: false,
+
+            // Use stored extra metadata, falling back to defaults if not present
+            hasWhitepaper: extra.hasWhitepaper ?? !!project.whitepaperUrl,
+            hasRoadmap: extra.hasRoadmap ?? true,
+            documentationClarity: extra.documentationClarity ?? 7,
+            priorProjects: extra.priorProjects ?? 1,
+            trackRecord: extra.trackRecord ?? 'neutral',
+            twitterFollowers: extra.twitterFollowers ?? 1000,
+            discordMembers: extra.discordMembers ?? 500,
+            githubActivity: extra.githubActivity ?? 5,
+            hasAudit: extra.hasAudit ?? false,
+            hasBugBounty: extra.hasBugBounty ?? false,
+            hasKYC: extra.hasKYC ?? false,
         };
 
         return this.calculateCompositeScore(input);

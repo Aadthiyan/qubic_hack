@@ -133,6 +133,7 @@ export class ProjectService {
         supplyDistributionFair: boolean;
         totalSupply?: bigint;
         initialCirculatingSupply?: bigint;
+        extraMetadata?: any;
     }): Promise<{ project: Project; metadata: ProjectMetadata }> {
         const client = await getClient();
 
@@ -161,9 +162,10 @@ export class ProjectService {
             const metadataResult = await client.query(
                 `INSERT INTO project_metadata (
           project_id, team_allocation_percent, team_vesting_months, 
-          has_founder_locks, supply_distribution_fair, total_supply, initial_circulating_supply
+          has_founder_locks, supply_distribution_fair, total_supply, initial_circulating_supply,
+          extra_metadata
         )
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
          RETURNING *`,
                 [
                     project.id,
@@ -173,6 +175,7 @@ export class ProjectService {
                     data.supplyDistributionFair,
                     data.totalSupply?.toString() || null,
                     data.initialCirculatingSupply?.toString() || null,
+                    data.extraMetadata || {}
                 ]
             );
 

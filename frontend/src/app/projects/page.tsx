@@ -23,17 +23,20 @@ export default function ProjectsPage() {
     }
 
     if (error) {
+        console.error('Projects fetch error:', error);
         return (
             <div className="p-8">
                 <h1 className="text-3xl font-bold mb-4">All Projects</h1>
                 <div className="glass-panel p-6 text-center">
                     <p className="text-red-400">Failed to load projects. Please try again.</p>
+                    <p className="text-gray-500 text-sm mt-2">Check console for details</p>
                 </div>
             </div>
         );
     }
 
-    const projects = data?.data?.projects || [];
+    const projects = data?.projects || [];
+    console.log('Projects data:', { total: projects.length, first: projects[0] });
 
     return (
         <div className="p-8">
@@ -65,19 +68,27 @@ export default function ProjectsPage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {projects.map((project: any) => {
-                        // Handle both camelCase and snake_case properties
-                        const grade = project.grade || project.risk_grade || 'Pending';
-                        const score = project.score || project.risk_score || 0;
-                        const dateStr = project.created_at || project.createdAt;
+                        const grade = project.grade || 'Pending';
+                        const score = project.score;
+                        const createdAt = project.created_at;
+
+                        let formattedDate = 'No date';
+                        if (createdAt) {
+                            try {
+                                const date = new Date(createdAt);
+                                formattedDate = !isNaN(date.getTime())
+                                    ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                                    : 'Invalid date';
+                            } catch {
+                                formattedDate = 'Invalid date';
+                            }
+                        }
 
                         const gradeColor =
-                            grade === 'Green'
-                                ? 'text-green-400 border-green-500/30 bg-green-500/10'
-                                : grade === 'Yellow'
-                                    ? 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'
-                                    : grade === 'Red'
-                                        ? 'text-red-400 border-red-500/30 bg-red-500/10'
-                                        : 'text-gray-400 border-gray-500/30 bg-gray-500/10';
+                            grade === 'Green' ? 'text-green-400 border-green-500/30 bg-green-500/10' :
+                                grade === 'Yellow' ? 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10' :
+                                    grade === 'Red' ? 'text-red-400 border-red-500/30 bg-red-500/10' :
+                                        'text-gray-400 border-gray-500/30 bg-gray-500/10';
 
                         return (
                             <div
@@ -93,15 +104,17 @@ export default function ProjectsPage() {
                                 </div>
 
                                 <div className="flex items-center gap-2 mb-4">
-                                    {score >= 70 ? (
-                                        <TrendingUp size={20} className="text-green-400" />
-                                    ) : score >= 50 ? (
-                                        <TrendingDown size={20} className="text-yellow-400" />
+                                    {score !== null && score !== undefined ? (
+                                        <>
+                                            {score >= 70 ? <TrendingUp size={20} className="text-green-400" /> :
+                                                score >= 50 ? <TrendingDown size={20} className="text-yellow-400" /> :
+                                                    <TrendingDown size={20} className="text-red-400" />}
+                                            <span className="text-3xl font-bold text-white">{Math.round(score)}</span>
+                                            <span className="text-gray-400">/100</span>
+                                        </>
                                     ) : (
-                                        <TrendingDown size={20} className="text-red-400" />
+                                        <span className="text-gray-500 text-sm">No score yet</span>
                                     )}
-                                    <span className="text-3xl font-bold text-white">{score}</span>
-                                    <span className="text-gray-400">/100</span>
                                 </div>
 
                                 <p className="text-sm text-gray-400 mb-4 line-clamp-2">
@@ -110,7 +123,7 @@ export default function ProjectsPage() {
 
                                 <div className="flex items-center gap-2 text-xs text-gray-500">
                                     <Calendar size={14} />
-                                    <span>{dateStr ? new Date(dateStr).toLocaleDateString() : 'Active'}</span>
+                                    <span>{formattedDate}</span>
                                 </div>
                             </div>
                         );

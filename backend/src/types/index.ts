@@ -22,6 +22,9 @@ export interface ProjectMetadata {
     founderWalletAddress?: string;
     hasFounderLocks: boolean;
     supplyDistributionFair: boolean;
+    total_supply?: string;
+    initial_circulating_supply?: string;
+    extra_metadata?: any;
     createdAt: Date;
 }
 
